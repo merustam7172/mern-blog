@@ -29,6 +29,8 @@ app.use('/api/auth', authRoutes);
 
 
 
+
+
 // middleware for errorhandle
 app.use((err,req,res,next) => {
     const statusCode = err.statusCode || 500;
