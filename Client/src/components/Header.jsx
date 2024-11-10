@@ -2,17 +2,17 @@ import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaSun } from 'react-icons/fa';
-// import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 // import { toggleTheme } from '../redux/theme/themeSlice';
-// import { signoutSuccess } from '../redux/user/userSlice';
+// import { signoutSuccess } from '../redux/user/userSlice.js';
 import { useEffect, useState } from 'react';
 
 export default function Header() {
   const path = useLocation().pathname;
   const location = useLocation();
   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-//   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
 //   const { theme } = useSelector((state) => state.theme);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -82,13 +82,13 @@ export default function Header() {
             <FaMoon />
           {/* {theme === 'light' ? <FaSun /> : <FaMoon />} */}
         </Button>
-        {true ? (
+        {currentUser ? (
           <Dropdown
             arrowIcon={false}
             inline
-            // label={
-            //   <Avatar alt='user' img={currentUser.profilePicture} rounded />
-            // }
+            label={
+              <Avatar alt='user' img={currentUser.profilePicture} rounded />
+            }
           >
             <Dropdown.Header>
               <span className='block text-sm'>@aslkdfjs</span>
