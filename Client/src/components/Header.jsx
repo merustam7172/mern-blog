@@ -91,9 +91,9 @@ export default function Header() {
             }
           >
             <Dropdown.Header>
-              <span className='block text-sm'>@aslkdfjs</span>
+              <span className='block text-sm'>@{currentUser.username}</span>
               <span className='block text-sm font-medium truncate'>
-                @mail.com
+                {currentUser.email}
                 {/* {currentUser.email} */}
               </span>
             </Dropdown.Header>
