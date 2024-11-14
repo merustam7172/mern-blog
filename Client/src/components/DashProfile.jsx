@@ -14,54 +14,57 @@ const DashProfile = () => {
   const [formData, setFormData] = useState({});
   const [updateSuccessfully, setUpdateSuccessfully] = useState(false);
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     if (file.size > 2 * 1024 * 1024) {
-  //       setUploadError('File size should be less than 2MB');
-  //       return;
-  //     }
-  //     setImageFile(file);
-  //     setImageFileUrl(URL.createObjectURL(file));
-  //   }
-  // };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setUploadError('File size should be less than 2MB');
+        return;
+      }
+      setImageFile(file);
+      setImageFileUrl(URL.createObjectURL(file));
+    }
+  };
 
-  // const uploadImage = async () => {
-  //   try {
-  //     setLoading(true);
-  //     setUploadError(null);
-  //     const formData = new FormData();
-  //     formData.append('profilePicture', imageFile);
+  useEffect(() => {
+    if (imageFile) {
+      uploadImage();
+    }
+  }, [imageFile]);
 
-  //     const response = await fetch('/api/user/upload-image', {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
+  const uploadImage = async () => {
+    try {
+      setLoading(true);
+      setUploadError(null);
+      const formData = new FormData();
+      formData.append('profilePicture', imageFile);
 
-  //     const data = await response.json();
+      const response = await fetch('/api/user/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
 
-  //     if (!response.ok) {
-  //       throw new Error(data.error);
-  //     }
+      const imageLink = await response.json();
+      
+      setFormData(prevData => ({
+        ...prevData,
+        profilePicture: imageLink // Add image link to formDat
+      }));
+      console.log(formData);
 
-  //     dispatch(updateProfileSuccess({ 
-  //       ...currentUser, 
-  //       profilePicture: data.profilePicture 
-  //     }));
-  //     setUploadError(null);
-  //   } catch (error) {
-  //     setUploadError(error.message);
-  //     dispatch(updateProfileFailure(error.message));
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+            
+      setUploadError(null);
+    } catch (error) {
+      setUploadError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   if (imageFile) {
-  //     uploadImage();
-  //   }
-  // }, [imageFile]);
+
 
   const handleChange = (e) => {
     setFormData({
@@ -104,11 +107,11 @@ const DashProfile = () => {
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4" onClick={handleSubmit}>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <input 
           type="file" 
           accept="image/*" 
-          // onChange={handleImageChange} 
+          onChange={handleImageChange} 
           ref={filePickerRef} 
           className="hidden" 
         />
@@ -120,12 +123,13 @@ const DashProfile = () => {
             src={imageFileUrl || currentUser.profilePicture}
             alt="user"
             className="rounded-full w-full h-full object-cover border-8 border-[lightgray]"
+            
           />
-          {loading && (
+          {/* {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <span className="text-white">Uploading...</span>
             </div>
-          )}
+          )} */}
         </div>
         <TextInput
           type="text"

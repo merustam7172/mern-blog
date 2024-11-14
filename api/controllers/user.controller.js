@@ -1,14 +1,8 @@
 import User from "../models/user.models.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs'
-// import cloudinary from 'cloudinary';
+import {uploadImageOnCloudinary} from '../utils/cloudinary.js'
 
-
-// cloudinary.config({
-//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET,
-//   });
 
 
 export const test = (req,res) => {
@@ -17,6 +11,29 @@ export const test = (req,res) => {
 
 
 // Profile update functinality
+export const updateProfile  = async(req,res,next) => {
+  
+  try {
+    const picture = req.file?.fieldname;
+    const picturePath = req.file?.path
+    
+    // uploading image on cloudinary
+    const {secure_url, public_id} =  await uploadImageOnCloudinary(picturePath, "User_Profiles")
+    if(!secure_url){
+      return res.status(400).json({
+        success : false,
+        message : 'Error while uploading image',
+        error : secure_url
+      });
+    }
+
+    console.log("Uploaded successfully");
+    res.status(200).json(secure_url);
+  } catch (error) {
+    console.log(error.message);
+    next(error);
+  }
+}
 
 
 // update user
@@ -36,15 +53,15 @@ export const updateUser = async (req, res,next) => {
     if(req.body.username.length < 7 || req.body.username.length > 20){
       return next(errorHandler(400, 'Username must be between 7 and 20 characters'))
     }
+    if(req.body.username !== req.body.username.toLowerCase()){
+      return next(errorHandler(400, 'Username must be lowercase'))
+    }
+  
+    if(!req.body.username.match(/^[a-zA-Z0-9]+$/)){
+      return next(errorHandler(400, 'Username only contain letters and numbers'))
+    }
   }
 
-  if(req.body.username !== req.body.username.toLowerCase()){
-    return next(errorHandler(400, 'Username must be lowercase'))
-  }
-
-  if(!req.body.username.match(/^[a-zA-Z0-9]+$/)){
-    return next(errorHandler(400, 'Username only contain letters and numbers'))
-  }
 
   try {
     const id = req.user.id;
