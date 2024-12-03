@@ -62,7 +62,7 @@ const DashProfile = () => {
         ...prevData,
         profilePicture: imageLink, // Add image link to formDat
       }));
-      console.log(formData);
+      console.log(imageLink);
 
       if (!response.ok) {
         throw new Error(data.error);

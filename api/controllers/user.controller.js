@@ -27,7 +27,7 @@ export const updateProfile  = async(req,res,next) => {
       });
     }
 
-    console.log("Uploaded successfully");
+    console.log("Uploaded postImage  successfully");
     res.status(200).json(secure_url);
   } catch (error) {
     console.log(error.message);
