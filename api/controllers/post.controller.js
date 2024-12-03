@@ -31,10 +31,12 @@ export const create = async (req, res, next) => {
   }
 };
 
-export const uploadPostImage = async (req, res) => {
+export const uploadPostImage = async (req, res, next) => {
   try {
     const picturePath = req.file?.path;
-
+    if(!picturePath){
+       return res.status(500).json(null);
+    }
     const { secure_url, public_id } = await uploadImageOnCloudinary(
       picturePath,
       "Post_Image"
