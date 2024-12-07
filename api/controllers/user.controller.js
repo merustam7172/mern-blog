@@ -84,7 +84,7 @@ export const updateUser = async (req, res,next) => {
   
 export const deleteUser = async(req,res,next) => {
   if(req.user.id !== req.params.userId){
-    next(errorHandler(400, 'You are not allowed to update this User'))
+    next(errorHandler(400, 'You are not allowed to delete this User'))
   }
 
   try {
@@ -105,8 +105,8 @@ export const signoutUser = (req,res, next) => {
 
 // get all users
 export const getUsers = async(req, res, next) => {
-  if( !req.user.isAdmin || req.user.id !== req.params.userId){
-    return next(errorHandler(403,"You are not allowed to delete this post"));
+  if( !req.user.isAdmin){
+    return next(errorHandler(403,"You are not allowed to see this page"));
   }
 
   try {
