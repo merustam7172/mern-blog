@@ -6,13 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import Comment from "./Comment";
 
-
 const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState(null);
-  const [comments, setComments] = useState([])
-
+  const [comments, setComments] = useState([]);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,23 +19,26 @@ const CommentSection = ({ postId }) => {
       const res = await fetch("/api/comment/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({content : comment, postId : postId, userId : currentUser._id}),
+        body: JSON.stringify({
+          content: comment,
+          postId: postId,
+          userId: currentUser._id,
+        }),
       });
 
       const data = await res.json();
 
-      if(res.ok){
-        setComment('');
-        setCommentError(null)
-        setComments([data, ...comments])
-      }
-      else{
-        setCommentError(data.message)
+      if (res.ok) {
+        setComment("");
+        setCommentError(null);
+        setComments([data, ...comments]);
+      } else {
+        setCommentError(data.message);
         return;
       }
     } catch (error) {
-        console.log(error.message)
-        setCommentError(error.message)
+      console.log(error.message);
+      setCommentError(error.message);
     }
   };
 
@@ -45,18 +47,46 @@ const CommentSection = ({ postId }) => {
       try {
         const res = await fetch(`/api/comment/getPostComments/${postId}`);
 
-        if(res.ok){
+        if (res.ok) {
           const data = await res.json();
           setComments(data);
         }
       } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
       }
-
-    }
+    };
     getComments();
   }, [postId]);
 
+  const handleLike = async (commentId ) => {
+    try {
+      if (!currentUser) {
+        navigate("/sign-in");
+        return;
+      }
+      console.log("comment id in handle like", commentId)
+      const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+        method: "PUT",
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setComments(
+          comments.map((comment) => 
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.likes.length,
+                } 
+              : comment
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
@@ -103,33 +133,30 @@ const CommentSection = ({ postId }) => {
               Submit
             </Button>
           </div>
-          {
-            commentError &&
-            <Alert  className='mt-5' color="failure">{commentError}</Alert>
-          }
+          {commentError && (
+            <Alert className="mt-5" color="failure">
+              {commentError}
+            </Alert>
+          )}
         </form>
       )}
 
-      {
-        comments.length === 0 ? (
-          <p className="text-sm my-5">No comments yet!</p>
-        ) : (
-          <>
-            <div className="text-sm my-5 flex items-center gap-1">
-              <p>Comments</p>
-              <div className="border border-gray-400 py-1 px-2 rounded-sm">
-                <p>{comments.length}</p>
-              </div>
+      {comments.length === 0 ? (
+        <p className="text-sm my-5">No comments yet!</p>
+      ) : (
+        <>
+          <div className="text-sm my-5 flex items-center gap-1">
+            <p>Comments</p>
+            <div className="border border-gray-400 py-1 px-2 rounded-sm">
+              <p>{comments.length}</p>
             </div>
+          </div>
 
-            {
-              comments.map(comment => (
-                <Comment key={comment._id} comment={comment}/>
-              ) )
-            }
-          </>
-        )
-      }
+          {comments.map((comment) => (
+            <Comment key={comment._id} comment={comment} onLike={handleLike} />
+          ))}
+        </>
+      )}
     </div>
   );
 };
