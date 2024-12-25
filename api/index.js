@@ -24,7 +24,7 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-const _dirname = path.resolve();
+const __dirname = path.resolve();
 
 app.use(express.json())
 app.use(cookieParser());
