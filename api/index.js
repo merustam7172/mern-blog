@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import postRoutes from './routes/post.route.js'
 import CommentRoutes from './routes/comment.route.js'
 dotenv.config();
+import path from "path";
 
 mongoose
   .connect(
@@ -23,6 +24,7 @@ app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
+const _dirname = path.resolve();
 
 app.use(express.json())
 app.use(cookieParser());
@@ -33,9 +35,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/comment', CommentRoutes);
 
+app.use(express.static(path.join(__dirname, '/Client/dist')));
 
-
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Client', 'dist', 'index.html'));
+})
 // middleware for errorhandle
 app.use((err,req,res,next) => {
     const statusCode = err.statusCode || 500;
