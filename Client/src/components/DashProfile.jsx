@@ -62,7 +62,7 @@ const DashProfile = () => {
         ...prevData,
         profilePicture: imageLink, // Add image link to formDat
       }));
-      console.log(imageLink);
+      .log(imageLink);
 
       if (!response.ok) {
         throw new Error(data.error);
@@ -110,7 +110,7 @@ const DashProfile = () => {
       }
     } catch (error) {
       dispatch(updateProfileFailure(error.message));
-      console.log(error.message);
+      .log(error.message);
     }
   };
 
@@ -127,14 +127,14 @@ const DashProfile = () => {
 
       if (res.ok) {
         dispatch(DeleteUserSuccess());
-        console.log("User deleted Successfully");
+        .log("User deleted Successfully");
       } else {
         dispatch(DeleteUserFailure(data));
-        console.log("Server side error");
+        .log("Server side error");
       }
     } catch (error) {
       dispatch(DeleteUserFailure(error.message));
-      console.log(error.message);
+      .log(error.message);
     }
   };
 
@@ -147,12 +147,12 @@ const DashProfile = () => {
 
       const data = await res.json();
       if (!res.ok) {
-        console.log(data.message);
+        .log(data.message);
       } else {
         dispatch(signoutSuccess());
       }
     } catch (error) {
-      console.log(error.message);
+      .log(error.message);
     }
   };
 
