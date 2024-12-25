@@ -17,30 +17,15 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
   const [searchTerm, setSearchTerm] = useState('');
+  console.log(searchTerm)
 
-//   useEffect(() => {
-//     const urlParams = new URLSearchParams(location.search);
-//     const searchTermFromUrl = urlParams.get('searchTerm');
-//     if (searchTermFromUrl) {
-//       setSearchTerm(searchTermFromUrl);
-//     }
-//   }, [location.search]);
-
-//   const handleSignout = async () => {
-//     try {
-//       const res = await fetch('/api/user/signout', {
-//         method: 'POST',
-//       });
-//       const data = await res.json();
-//       if (!res.ok) {
-//         console.log(data.message);
-//       } else {
-//         dispatch(signoutSuccess());
-//       }
-//     } catch (error) {
-//       console.log(error.message);
-//     }
-//   };
+useEffect(() => {
+  const urlParams = new URLSearchParams(location.search);
+  const searchTermFromUrl = urlParams.get('searchTerm');
+  if(searchTermFromUrl){
+    setSearchTerm(searchTermFromUrl);
+  }
+}, [location.search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
