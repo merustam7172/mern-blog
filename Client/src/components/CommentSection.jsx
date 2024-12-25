@@ -46,19 +46,20 @@ const CommentSection = ({ postId }) => {
   };
 
   useEffect(() => {
-    const getComments = async () => {
+    const getPostComments = async () => {
       try {
         const res = await fetch(`/api/comment/getPostComments/${postId}`);
 
         if (res.ok) {
           const data = await res.json();
-          setComments(data);
+          const filteredComments = data.filter(comment => comment.postId === postId);
+          setComments(filteredComments);
         }
       } catch (error) {
         console.log(error.message);
       }
     };
-    getComments();
+    getPostComments();
   }, [postId]);
 
   const handleLike = async (commentId ) => {
